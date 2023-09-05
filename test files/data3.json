@@ -1,0 +1,24 @@
+{
+  "data": [
+    {
+      "key": "Apple",
+      "value": 8
+    },
+    {
+      "key": "Banana",
+      "value": 16
+    },
+    {
+      "key": "Orange",
+      "value": 24
+    },
+    {
+      "key": "Grape",
+      "value": 32
+    },
+    {
+      "key": "Mango",
+      "value": 40
+    }
+  ]
+}
