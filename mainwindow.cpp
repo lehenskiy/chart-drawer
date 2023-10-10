@@ -5,6 +5,7 @@ int IOCContainer::s_nextTypeId = 1;
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent) {
     selectedFilePath = "";
+    isChartRendered = false;
 
     openFolderButton = std::make_unique<QPushButton>("Открыть папку", this);
     openFolderButton->setStyleSheet("border: 1px solid black; border-radius: 5px; padding: 5px;");
@@ -73,8 +74,6 @@ MainWindow::MainWindow(QWidget *parent)
     std::unique_ptr<QWidget> centralWidget = std::make_unique<QWidget>(this);
     centralWidget->setLayout(mainLayout.release());
     setCentralWidget(centralWidget.release());
-    // Сбрасываем флаг, так как диаграмма не была отрисована
-    isChartRendered = false;
 
     setMinimumSize(800, 600);
     resize(1024, 768);
@@ -149,14 +148,12 @@ void MainWindow::changeChartType(const QString &type) {
     }
     if (type == "Столбчатая диаграмма") {
         container.RegisterFactory<AbstractChartRenderer, BarChartRenderer>();
-        chartRenderer = container.GetObject<AbstractChartRenderer>();
     } else if (type == "Круговая диаграмма") {
         container.RegisterFactory<AbstractChartRenderer, PieChartRenderer>();
-        chartRenderer = container.GetObject<AbstractChartRenderer>();
     } else if (type == "Горизонтальная столбчатая диаграмма") {
         container.RegisterFactory<AbstractChartRenderer, HorizontalBarChartRenderer>();
-        chartRenderer = container.GetObject<AbstractChartRenderer>();
     }
+    chartRenderer = container.GetObject<AbstractChartRenderer>();
 
     if (chartRenderer) {
         if (errorLabel) {
@@ -166,7 +163,7 @@ void MainWindow::changeChartType(const QString &type) {
         chartRenderer->renderChart(extractedData, chartView);
         isChartRendered = true;
     } else {
-        emit errorMessageReceived("Ошибка: невозможно создать объект диаграммы");
+        emit errorMessageReceived("Невозможно создать объект диаграммы");
         isChartRendered = false;
     }
 }
