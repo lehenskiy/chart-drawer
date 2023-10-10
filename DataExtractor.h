@@ -30,7 +30,10 @@ public:
             return false;
         }
 
-        QSqlDatabase database = QSqlDatabase::addDatabase("QSQLITE");
+        if (!QSqlDatabase::contains("qt_sql_default_connection")) {
+            QSqlDatabase::addDatabase("QSQLITE");
+        }
+        QSqlDatabase database = QSqlDatabase::database();
         database.setDatabaseName(filePath);
         if (!database.open()) {
             return false;
@@ -46,7 +49,10 @@ public:
     {
         QList<QPair<QString, QString>> extractedData;
 
-        QSqlDatabase database = QSqlDatabase::addDatabase("QSQLITE");
+        if (!QSqlDatabase::contains("qt_sql_default_connection")) {
+            QSqlDatabase::addDatabase("QSQLITE");
+        }
+        QSqlDatabase database = QSqlDatabase::database();
         database.setDatabaseName(filePath);
         database.open();
 
@@ -151,6 +157,7 @@ public:
         QJsonValue dataValue = jsonObj.value("data");
         // Преобразование значения "data" в массив JSON
         QJsonArray dataArray = dataValue.toArray();
+
         // Итерация по элементам массива
         for (const QJsonValue& itemValue : dataArray) {
             // Проверка, является ли элемент объектом
@@ -180,11 +187,13 @@ public:
     {
         // Создаем объект QFile для работы с файлом по указанному пути
         QFile file(filePath);
+
         // Открываем файл в режиме чтения и текстовом режиме
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             // Если не удалось открыть файл, возвращаем false
             return false;
         }
+
         // Создаем объект QTextStream для чтения данных из файла
         QTextStream in(&file);
         // Считываем первую строку файла, содержащую заголовки столбцов
@@ -215,6 +224,7 @@ public:
         int keyIndex = headers.indexOf("Key");
         // Находим индекс столбца "Value" в списке заголовков
         int valueIndex = headers.indexOf("Value");
+
         // Пока не достигнут конец файла
         while (!in.atEnd()) {
             // Считываем строку из файла
