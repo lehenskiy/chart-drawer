@@ -98,11 +98,6 @@ void MainWindow::openFolder() {
             fileSystemModel->setFilter(QDir::NoDotAndDotDot | QDir::Files);
             fileSystemModel->setRootPath(folderPath);
 
-            QStringList nameFilters;
-            nameFilters << "*.sqlite" << "*.json" << "*.csv";
-            fileSystemModel->setNameFilters(nameFilters);
-            fileSystemModel->setNameFilterDisables(false);
-
             fileListView->setModel(fileSystemModel.get());
             fileListView->setRootIndex(fileSystemModel->index(folderPath));
 
@@ -128,16 +123,14 @@ void MainWindow::handleFileSelectionChanged(const QItemSelection &selected) {
 
         if (fileExtension == "sqlite") {
             dataExtractor = std::make_unique<SqlDataExtractor>();
-            emit errorMessageReceived("Выбран SQL-файл: " + selectedFilePath);
         } else if (fileExtension == "json") {
             dataExtractor = std::make_unique<JsonDataExtractor>();
-            emit errorMessageReceived("Выбран JSON-файл: " + selectedFilePath);
         } else if (fileExtension == "csv") {
             dataExtractor = std::make_unique<CsvDataExtractor>();
-            emit errorMessageReceived("Выбран CSV-файл: " + selectedFilePath);
         } else {
             dataExtractor = nullptr;
             emit errorMessageReceived("Неподдерживаемый тип файла");
+            return;
         }
 
         if (dataExtractor->checkFile(selectedFilePath)) {
@@ -175,10 +168,6 @@ void MainWindow::changeChartType(const QString &type) {
     } else {
         emit errorMessageReceived("Ошибка: невозможно создать объект диаграммы");
         isChartRendered = false;
-        if (chartView) {
-            chartView->setVisible(false);
-        }
-        errorLabel->setVisible(true);
     }
 }
 
@@ -186,6 +175,7 @@ void MainWindow::printErrorLabel(QString text) {
     if (chartView) {
         chartView->setVisible(false);
     }
+    errorLabel->setVisible(true);
     errorLabel->setText(text);
 }
 
