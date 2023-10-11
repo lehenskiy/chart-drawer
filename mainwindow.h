@@ -54,7 +54,7 @@ private:
     std::shared_ptr<QFileSystemModel> fileSystemModel;   // Модель файловой системы для QListView
     std::unique_ptr<QVBoxLayout> layout;                 // Обертка для QLabel и QChartView
     std::unique_ptr<QSplitter> splitter;                // Разделитель
-    std::unique_ptr<AbstractDataExtractor> dataExtractor;
+    std::unique_ptr<DataExtractorInterface> dataExtractor;
     std::shared_ptr<AbstractChartRenderer> chartRenderer;
     QList<QPair<QString, QString>> extractedData;
     QString selectedFilePath;
