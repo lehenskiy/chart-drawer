@@ -13,15 +13,15 @@
 #include <QMap>
 #include <QFile>
 
-class AbstractDataExtractor
+class DataExtractorInterface
 {
 public:
-    virtual ~AbstractDataExtractor() {}
+    virtual ~DataExtractorInterface() {}
     virtual bool checkFile(const QString &filePath) = 0;
     virtual QList<QPair<QString, QString>> extractData(const QString& filePath) = 0;
 };
 
-class SqlDataExtractor : public AbstractDataExtractor
+class SqlDataExtractor : public DataExtractorInterface
 {
 public:
     bool checkFile(const QString& filePath)
@@ -104,7 +104,7 @@ public:
 };
 
 // Конкретная реализация DataExtractor для формата JSON
-class JsonDataExtractor : public AbstractDataExtractor
+class JsonDataExtractor : public DataExtractorInterface
 {
 public:
     bool checkFile(const QString& filePath)
@@ -180,7 +180,7 @@ public:
 };
 
 // Конкретная реализация DataExtractor для формата CSV
-class CsvDataExtractor : public AbstractDataExtractor
+class CsvDataExtractor : public DataExtractorInterface
 {
 public:
     bool checkFile(const QString& filePath)
